@@ -1,11 +1,16 @@
-cmake_minimum_required(VERSION 2.4.6)
+cmake_minimum_required(VERSION 2.8.3)
 project(cob_camera_calibration)
 
-find_package(catkin REQUIRED COMPONENTS)
+find_package(catkin REQUIRED COMPONENTS message_generation std_msgs)
 
 catkin_python_setup()
 
 catkin_package()
+
+add_service_files(
+  FILES
+  PermissionTrig.srv
+)
 
 ###install tags
 install(DIRECTORY launch

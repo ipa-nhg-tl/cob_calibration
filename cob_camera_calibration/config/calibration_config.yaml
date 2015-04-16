@@ -1,0 +1,19 @@
+intrinsic_camera_calibration:
+  camera_0:
+    name: "camera_0"
+    topic_camera: /camera/rgb
+    topic_image_raw: /camera/rgb/image_raw
+    output_dir: "/tmp"
+    output_file: "camera_0.yaml"
+    checkerboard_pattern_size: "9x6"
+    checkerboard_square_size: 0.03
+#    minimum_number_of_samples: 0		# Optional. "0" means there's no minimum.
+#    arm_positions:
+#      position_0: [[]]
+#      ...
+#      position_n: [[]]
+#  camera_1:
+
+calibration_pattern:
+    pattern_size: "9x6"
+    square_size: 0.03

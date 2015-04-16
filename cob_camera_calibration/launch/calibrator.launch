@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+    <rosparam command="load" file="$(find cob_camera_calibration)/config/calibration_config.yaml" />
+    <node pkg="cob_camera_calibration" type="cameracalibrator.py" name="cameracalibrator" output="screen" />
+
+
+
+</launch>

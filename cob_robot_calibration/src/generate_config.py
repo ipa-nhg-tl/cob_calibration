@@ -64,39 +64,53 @@ import tf
 from urdf_parser_py.urdf import URDF
 from cob_robot_calibration_est.single_transform import SingleTransform
 from numpy import array, reshape
+import pdb
 
 def get_chains(d, origin='base_link'):
-    print '[INFO]: %s was selected as root frame' % origin
+    print '[INFO]: %s was selected as root frame' % origin # this should be configured in a yaml file
     if not isinstance(d, dict):
         print "[ERROR]: d should be dict, is %s" % type(d)
         return
     chains = transform_chain_dict(d['chains'])
     trees = []
-    for k, v in d.iteritems():
+    for k, v in d.iteritems():# a dict iteratior where k is the key and v is the value of the key
+        # here d is the dictonary loaded from the yaml file of sensors
         if k == 'camera_chains':
-            for x in v:
+            for x in v:# iterate through the camera chains
+                pdb.set_trace()
                 trees += build_tree(x['chain'], chains, origin)
         elif k == 'sensor_chains':
             for x in v:
+                pdb.set_trace()
                 trees += build_tree(x, chains, origin)
 
     print " Trees: "
     print trees
     # to_calibrate = list(set(to_calibrate))
+    pdb.set_trace()
     return trees
     # return transformations, to_calibrate
 
 
-def transform_chain_dict(d):
+def transform_chain_dict(d): # d is a list of dicts
+    '''
+    @summary: this function takes a list of dicts and returns a dict where each
+    entry is an element from the list, the dicts keys are the chain_id of the element
+    in the list. it creates a dict of dicts from an list of dicts
+    '''
     new_dict = {}
+    pdb.set_trace()
     for chain in d:
         new_dict[chain['chain_id']] = chain
     return new_dict
 
 
 def build_tree(chain, kinematic_chains, origin):
+    '''
+    @summary: this function 
+    '''
     tree = [origin]
-    tree += [''.join(chain['before_chain'])]
+    tree += [''.join(chain['before_chain'])]# appending an empty string in case the chain before is empty
     tree = cleanup_tree(tree)
     for chain_id in chain['chains']:
         kinematic_chain = kinematic_chains[chain_id]
@@ -122,6 +136,9 @@ def build_tree(chain, kinematic_chains, origin):
 
 
 def cleanup_tree(tree):
+    '''
+    @summary: removes empty strings from the list
+    '''
     new_tree = []
     for v in tree:
         if v != '':
@@ -264,14 +281,16 @@ def __main__():
     free_system = rospy.get_param('free_system', None)
     with open(sensors_path, "r") as f:
         sensors = yaml.load(f)
-    transformations = get_chains(sensors)
+    pdb.set_trace()
+    transformations = get_chains(sensors)# only interested in the sensor chains entry not the rest
     print sensors
+    pdb.set_trace()
     transformation_dict = generate_transformation_dict(
         transformations, listener)
     print transformation_dict
     with open(minimal_system, "r") as f:
         system = yaml.load(f)
-
+    pdb.set_trace()
     if 'transforms' in system:
 
         t = dict(transformation_dict, **system['transforms'])

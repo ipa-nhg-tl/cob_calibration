@@ -91,7 +91,7 @@ def getIk(arm_ik, (t, q), link, seed=None):
         print "Could not get arm joint_names from parameter server."
         return None
 
-        
+    #  Read Joint angle and handel exceptions 
     # if seed == None get current joint angles from arm as seed position
     if seed == None:
         seed = []
@@ -172,6 +172,11 @@ def main():
         
     # init
     arm_ik = rospy.ServiceProxy('/cob_arm_kinematics/get_ik', GetPositionIK)
+    
+    
+    #
+    # Move these to a configuration file
+    #
     
     # translation and rotation for main calibration position
     # ------------------------------------------------------
@@ -276,7 +281,7 @@ def main():
     print "==> converting poses to joint_states"
     # stable seed for center position
     # IMPORTANT: adjust this to something reasonable if you change the main t_calib, q_calib position
-    prev_state = [0.13771, -1.61107, 1.60103, -0.90346, 2.30279, -1.28408, -0.93369]
+    prev_state = [0.13771, -1.61107, 1.60103, -0.90346, 2.30279, -1.28408, -0.93369] # Move to a configuration file
      
     arm_states = {}
     no_solution=0

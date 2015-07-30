@@ -32,6 +32,9 @@
 
   <run_depend>cob_camera_calibration</run_depend>
   <run_depend>cob_robot_calibration_est</run_depend>
+
+  <run_depend>moveit_commander</run_depend>
+  <run_depend>cob_moveit_config</run_depend>
   
 
 

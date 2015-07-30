@@ -4,7 +4,7 @@
   <!-- upload default script server parameters -->
   <include file="$(find cob_default_robot_config)/upload_param.launch"/>
 
-  <!-- upload calibration script_server parameters -->
-  <rosparam command="load" ns="/script_server/arm" file="$(find cob_calibration_config)/$(env ROBOT)/user_defined/calibration_seed.yaml"/>
+  <!-- upload calibration script_server parameters (The seed should no longer be needed)-->
+  <!-- <rosparam command="load" ns="/script_server/arm" file="$(find cob_calibration_config)/$(env ROBOT)/user_defined/calibration_seed.yaml"/> -->
 
 </launch>

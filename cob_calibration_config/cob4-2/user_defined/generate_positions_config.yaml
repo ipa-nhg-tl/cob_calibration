@@ -1,0 +1,17 @@
+arms:
+  arm_left:
+    name: arm_left  # Name of the planning group
+    limits_corner_1: [0.0, 0.30, 0.2]  # x1, y1, z1		Note that these are the limits for the END EFFECTOR link,
+    limits_corner_2: [-0.50, -0.30, 0.8]     # x2, y2, z2	take that into account when defining these values.
+    discritization: [3,3,3]    # Discretization of x, y, z
+    hand_orientation: [0.5, 0.5, 0.5, 0.5]    # Quaternion values. Use converter to convert from Euler
+    arm_planning_reference_frame: torso_cam3d_left_link   # Relative to which frame the limits and the orientation is defined
+
+
+  arm_right:
+    name: arm_right
+    limits_corner_1: [0.0, 0.30, 0.2]
+    limits_corner_2: [-0.50, -0.30, 0.8]
+    discritization: [3,3,3]
+    hand_orientation: [0.5, 0.5, 0.5, 0.5]
+    arm_planning_reference_frame: torso_cam3d_right_link

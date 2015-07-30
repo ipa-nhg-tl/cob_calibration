@@ -72,8 +72,9 @@ from cob_camera_calibration import Checkerboard, CheckerboardDetector, cv2util
 from control_msgs.msg import JointTrajectoryControllerState
 
 import tf
-CHECKERBOARD_NAME = "cb_9x6"
-CHECKERBOARD_CHAIN = "arm_chain"
+import pdb
+CHECKERBOARD_NAME = "cb_9x6"            ### Should be read from an yaml file
+CHECKERBOARD_CHAIN = "arm_right"        ### Should be read from an yaml file
 
 
 class DataCollector():
@@ -84,7 +85,11 @@ class DataCollector():
     Subscribes to various topics needed (e.g. images, camera infos, joint angles) and
     provides a service. When service is called, a set of samples is recorded,
     processed (e.g. checkerboards are detected) and combined to a RobotMeasurement message
-    which is published as /robot_measurement.
+    which is published to /robot_measurement.
+    
+    @todo: this file should be updated such that the CHECKERBOARD_NAME and 
+    CHECKERBOARD_CHAIN are passed as inputs from the call of the service since 
+    now they are taken as hard coded constants
     '''
 
     def __init__(self):
@@ -102,7 +107,7 @@ class DataCollector():
         with open(rospy.get_param("~sensors_yaml"), 'r') as a:
             sensors_yaml = yaml.load(a.read())
         # self._get_transformation_links(sensors_yaml)
-        self._create_transformation_callbacks(sensors_yaml)
+        self._create_transformation_callbacks(sensors_yaml) # have a look at this
         #self.listener = tf.TransformListener()
 
        # CvBridge
@@ -111,8 +116,8 @@ class DataCollector():
         # initialize private storage
         self._images = {}
         self._images_received = {}
-
-        self.counter = 1
+        self.numCams = 0
+        self.counter = 1 # Why is this one and not zero ?
 
         #  init publisher / subscriber
         self._robot_measurement_pub = rospy.Publisher(
@@ -128,6 +133,7 @@ class DataCollector():
         self._images[rospy.get_param("~cameras")["reference"]["name"]] = {}
         self._images_received[rospy.get_param(
             "~cameras")["reference"]["name"]] = False
+        self.numCams += 1
         for camera in rospy.get_param("~cameras")["further"]:
             rospy.Subscriber(
                 camera["topic"],
@@ -135,7 +141,8 @@ class DataCollector():
                 self._callback_image,
                 camera["name"])
             self._images[camera["name"]] = {}
-            self._images_received[camera["name"]] = True
+            self._images_received[camera["name"]] = True        ### Change to false
+            self.numCams += 1
         print "==> done with initialization"
 
     def _callback_image(self, image_raw, id):
@@ -230,7 +237,6 @@ class DataCollector():
         print self._images_received
 
 
-
         start_time = rospy.Time.now()
         while (not all(self._images_received.values()) or not all(self.transformations.values())):
             rospy.sleep(0.005)
@@ -243,7 +249,7 @@ class DataCollector():
                 for name, v in self._transformations_received.iteritems():
                     if not v:
                         print "--> still waiting for sample from %s"%name
-            start_time = rospy.Time.now()
+            start_time = rospy.Time.now()                                       ### Should be inside the if?
         print "got sample"
         #latest_left = self._left
 
@@ -251,58 +257,65 @@ class DataCollector():
         # ---------------------------------------------
         checkerboard = Checkerboard(pattern_size, square_size)
         checkerboard_detector = CheckerboardDetector(checkerboard)
-
+        detected_image_flag = []
+        detected_image_id = []
+#         pdb.set_trace()
         # detect cb
         # --------------
         for name, image in self._images.iteritems():
             image = image["image"]
 	    #print image.header
-            cvImage = self.bridge.imgmsg_to_cv(image, "mono8")
-            imagecv = cv2util.cvmat2np(cvImage)
+            cvImage = self.bridge.imgmsg_to_cv2(image, "mono8")
+            #imagecv = cv2util.cvmat2np(cvImage)
 
             try:
                 corners = checkerboard_detector.detect_image_points(
-                    imagecv, is_grayscale=True)
+                    cvImage, is_grayscale=True)
             except:
-                # cb not found
+                # cb not found in this image
                 rospy.logwarn("No calibration pattern found for: '%s'"%name)
-                return False
+                detected_image_flag.append(False)
+                detected_image_id.append(name)
+#                 return False
             else:
                 print "cb found: %s"%name
                 img_points = []
                 for (x, y) in corners.reshape(-1, 2):
                     img_points.append(ImagePoint(x, y))
-
+                detected_image_flag.append(True)
+                detected_image_id.append(name)
             # create camera msg left
             # ----------------------
-            cam_msg = CameraMeasurement()
-            cam_msg.camera_id = name
-	    #print "crash before"
-            cam_msg.header.stamp = image.header.stamp
-	    #print "crash after"
-            #cam_msg.cam_info = image["camera_info"]
-            cam_msg.image_points = img_points
-            cam_msg.verbose = False
-            robot_msg.M_cam.append(cam_msg)
-            cam_msg.image        = image
-	    # print cam_msg.camera_id
-	    #print cam_msg.header
-            # cam_msg.image_rect   = latest_left["image_rect"]
-            # cam_msg.features    = # Not implemented here
-
-        #----------------------
-        #DEBUG publish pic
-        #-----------------
-        #self._image_pub_left.publish(latest_left["image"])
-
-        #----------------------
-        # Fill robot_msg
-        #----------------------
-        robot_msg.M_chain = self.transformations.values()
-
-        self._robot_measurement_pub.publish(robot_msg)
-
-        return True
+                cam_msg = CameraMeasurement()
+                cam_msg.camera_id = name
+    	    #print "crash before"
+                cam_msg.header.stamp = image.header.stamp
+    	    #print "crash after"
+                #cam_msg.cam_info = image["camera_info"]
+                cam_msg.image_points = img_points
+                cam_msg.verbose = False
+                robot_msg.M_cam.append(cam_msg)
+                cam_msg.image        = image
+    	    # print cam_msg.camera_id
+    	    #print cam_msg.header
+                # cam_msg.image_rect   = latest_left["image_rect"]
+                # cam_msg.features    = # Not implemented here
+    
+            #----------------------
+            #DEBUG publish pic
+            #-----------------
+            #self._image_pub_left.publish(latest_left["image"])
+    
+            #----------------------
+            # Fill robot_msg
+            #----------------------
+                robot_msg.M_chain = self.transformations.values()
+    
+                self._robot_measurement_pub.publish(robot_msg) # this data is saved to a bag file for later use
+        if(True in detected_image_flag):
+            return True
+        else:
+            return False
 
 
 if __name__ == "__main__":

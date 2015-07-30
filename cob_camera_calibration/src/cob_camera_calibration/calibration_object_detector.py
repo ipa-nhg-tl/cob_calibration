@@ -172,7 +172,7 @@ class CheckerboardDetector(CalibrationObjectDetector):
                 gray_image = image
 
             # refine checkerboard corners to subpixel accuracy
-            term = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_COUNT, 30, 0.1)
+            term = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_COUNT, 30, 0.1)   ### Move the tuning parameters to a yaml file maybe?
             cv2.cornerSubPix(gray_image, corners, (5, 5), (-1, -1), term)
         else:
             # could not find checkerboard

@@ -1,0 +1,97 @@
+checkerboards:
+  cb_9x6: {corners_x: 9, corners_y: 6, spacing_x: 03, spacing_y: 03}
+dh_chains:
+  arm_left:
+    cov: [0, 0, 0, 0, 0, 0, 0]
+    dh:
+    - name: 'arm_left_1_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_left_2_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_left_3_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_left_4_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_left_5_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_left_6_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_left_7_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    gearing: [0, 0, 0, 0, 0, 0, 0]
+  arm_right:
+    cov: [0, 0, 0, 0, 0, 0, 0]
+    dh:
+    - name: 'arm_right_1_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_right_2_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_right_3_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_right_4_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_right_5_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_right_6_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    - name: 'arm_right_7_joint'
+      type: rotz
+      xyzrpy: [0, 0, 0, 0, 0, 0]
+    gearing: [0, 0, 0, 0, 0, 0, 0]
+rectified_cams:
+  torso_cam3d_left_link:
+    baseline_shift: 0
+    cov: {u: 0, v: 0}
+    cx_shift: 0
+    cy_shift: 0
+    f_shift: 0
+  torso_cam3d_right_link:
+    baseline_shift: 0
+    cov: {u: 0, v: 0}
+    cx_shift: 0
+    cy_shift: 0
+    f_shift: 0
+  torso_cam3d_down_link:
+    baseline_shift: 0
+    cov: {u: 0, v: 0}
+    cx_shift: 0
+    cy_shift: 0
+    f_shift: 0
+transforms:
+  'arm_left_base_link': [0, 0, 0, 0, 0, 0]
+  'arm_right_base_link': [0, 0, 0, 0, 0, 0]
+  'cb_6x9_base_link_left': [1, 1, 1, 1, 1, 1]
+  'cb_6x9_base_link_right': [1, 1, 1, 1, 1, 1]
+  'gripper_left_base_link': [0, 0, 0, 0, 0, 0]
+  gripper_left_camera_link: [0, 0, 0, 0, 0, 0]
+  'gripper_left_finger_2_link': [0, 0, 0, 0, 0, 0]
+  'gripper_left_grasp_link': [0, 0, 0, 0, 0, 0]
+  'gripper_left_palm_link': [0, 0, 0, 0, 0, 0]
+  'gripper_right_base_link': [0, 0, 0, 0, 0, 0]
+  gripper_right_camera_link: [0, 0, 0, 0, 0, 0]
+  'gripper_right_finger_2_link': [0, 0, 0, 0, 0, 0]
+  'gripper_right_grasp_link': [0, 0, 0, 0, 0, 0]
+  'gripper_right_palm_link': [0, 0, 0, 0, 0, 0]
+  'torso_1_link': [0, 0, 0, 0, 0, 0]
+  'torso_2_link': [0, 0, 0, 0, 0, 0]
+  'torso_3_link': [0, 0, 0, 0, 0, 0]
+  'torso_base_link': [0, 0, 0, 0, 0, 0]
+  torso_cam3d_down_link: [1, 1, 1, 1, 1, 1]
+  'torso_cam3d_down_optical_frame': [0, 0, 0, 0, 0, 0]
+  torso_cam3d_left_link: [1, 1, 1, 1, 1, 1]
+  torso_cam3d_right_link: [1, 1, 1, 1, 1, 1]
+  arm_left_7_link: [0, 0, 0, 0, 0, 0]
+  arm_right_7_link: [0, 0, 0, 0, 0, 0]

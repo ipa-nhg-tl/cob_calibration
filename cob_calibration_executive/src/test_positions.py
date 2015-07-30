@@ -56,31 +56,35 @@
 #
 #################################################################
 PKG = 'cob_calibration_executive'
-NODE = 'collect_robot_calibration_data_node'
+NODE = 'test_robot_calibration_data_node'
 import roslib
 roslib.load_manifest(PKG)
 import rospy
-
+import sys
 from simple_script_server import simple_script_server
 import yaml
 import tf
+import moveit_commander
+import moveit_msgs.msg
 
+import pdb # debugger
 
-def capture_loop(positions, sss):
+def capture_loop(trajectories, sss):
     '''
-    Moves arm to all positions using script server instance sss
+    Moves arm to all trajectories using moveit commander
     and calls capture() to capture samples
+    @deprecated: This function is currently no longer being used in test_positions.py
     '''
     br = tf.TransformBroadcaster()
-    for index in range(len(positions)):
-        if positions[index]['torso_position'] == [0, 0, 0]:
+    for index in range(len(trajectories)):
+        if trajectories[index]['torso_position'] == [0, 0, 0]:
             continue
-        pre_signs=[a*b<0 for a,b in zip(positions[index]['joint_position'], positions[index-1]['joint_position'])]
+        pre_signs=[a*b<0 for a,b in zip(trajectories[index]['joint_position'], trajectories[index-1]['joint_position'])]
         if any(pre_signs[0:3]):
             sss.move("arm","home")
         print "--> moving arm to sample #%s" % index
-        pos = positions[index]
-        joint_pos = [[a for a in positions[index]['joint_position']]]
+        pos = trajectories[index]
+        joint_pos = [[a for a in trajectories[index]['joint_position']]]
         print pos
         nh = sss.move("arm", joint_pos)
         while nh.get_state() == 0:
@@ -98,8 +102,29 @@ def capture_loop(positions, sss):
                          "/chessboard_center",
                          "/sdh_palm_link")  # right upper corner
 
-        sss.move("torso", [positions[index]['torso_position']])
-
+        sss.move("torso", [trajectories[index]['torso_position']])
+def trajectory_test_loop (group):
+    '''
+    @summary: the function takes a group and finds the corresponding trajectroies 
+    which are auto-generated from generate_positions.py and iterates through them
+    @param group: this is the group for which the function will load the .yaml file
+    and move the group
+    @type group: moveit_commander.MoveGroupCommander
+    '''
+    # get position from parameter server
+    trajectory_path_root = rospy.get_param('trajectory_path_root', None)
+    trajectory_path_of_group = trajectory_path_root+group.get_name()+"calibration_trajectories.yaml" #this is how the name is saved in generate_positions.py
+    if trajectory_path_root is None:
+        print "[ERROR]: no trajectory for %s set" %group.get_name()
+        return
+    with open(trajectory_path_of_group, 'r') as f:
+        trajectory_of_group = yaml.load(f)
+    print "YAML trajectory file loaded for "+group.get_name()
+    for i in xrange(len(trajectory_of_group)):
+        group.execute(trajectory_of_group[i])
+        print "Progress of current group is %s out of %s" %(i, len(trajectory_of_group))
+    print "%s has finished testing it's trajectories" %group.get_name()
+    
 
 def main():
     rospy.init_node(NODE)
@@ -110,18 +135,15 @@ def main():
     #visible = rospy.ServiceProxy(checkerboard_checker_name, Visible)
     #rospy.wait_for_service(checkerboard_checker_name, 2)
     #print "--> service client for for checking for chessboards initialized"
-
     #kinematics_capture_service_name = "/collect_data/capture"
     #capture_kinematics = rospy.ServiceProxy(
         #kinematics_capture_service_name, Capture)
     #rospy.wait_for_service(kinematics_capture_service_name, 2)
     #print "--> service client for capture robot_states initialized"
-
     #image_capture_service_name = "/image_capture/capture"
     #capture_image = rospy.ServiceProxy(image_capture_service_name, Capture)
     #rospy.wait_for_service(image_capture_service_name, 2)
-    #print "--> service client for capture images initialized"
-
+    #print "--> service client for capture images initialize
     # init
     print "--> initializing sss"
     sss = simple_script_server()
@@ -131,23 +153,47 @@ def main():
     sss.recover("base")
     sss.recover("torso")
     sss.recover("head")
-
+    sss.move("arm_left","home") #move to home position
+    sss.move("arm_right","home")#move to home position
+    sss.move("head", "back")    #move to calibration position
+    rospy.wait_for_service("/move_group/plan_execution/set_parameters",timeout=30.0)
+    moveit_commander.roscpp_initialize(sys.argv) # init of moveit
+    robot = moveit_commander.RobotCommander()# init of moveit wrt robot
+    arm_left_group = moveit_commander.MoveGroupCommander("arm_left") # define groups
+    arm_right_group = moveit_commander.MoveGroupCommander("arm_right")
+    arm_left_group.set_pose_reference_frame('torso_3_link')#*** Set referece
+    arm_right_group.set_pose_reference_frame('torso_3_link')#*** Set referece
+    arm_list = [arm_left_group,arm_right_group] # list of groups for which we want to test the trajectories used for calibration
+    #scene = moveit_commander.PlanningSceneInterface() # init if scene if collisiton is to be avoided and for the addition of the cb pattern later
     print "--> setup care-o-bot for capture"
-    sss.move("head", "back")
-
-    # get position from parameter server
-    position_path = rospy.get_param('position_path', None)
-    if position_path is None:
-        print "[ERROR]: no path for positions set"
-        return
-    with open(position_path, 'r') as f:
-        positions = yaml.load(f)
-    print "==> capturing samples"
     start = rospy.Time.now()
-    capture_loop(positions, sss)
+    for i in xrange(len(arm_list)):
+        trajectory_test_loop(arm_list[i])
+        sss.move(arm_list[i].get_name(),"home")
     print "finished after %s seconds" % (rospy.Time.now() - start).to_sec()
-
+    sss.move("arm_left","home") #move to home position
+    sss.move("arm_right","home")#move to home position
 
 if __name__ == '__main__':
     main()
     print "==> done exiting"
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+

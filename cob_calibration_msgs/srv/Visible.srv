@@ -1,3 +1,5 @@
 ---
 bool master
 bool every
+bool[] visibleImages
+string[] cameraTopicID

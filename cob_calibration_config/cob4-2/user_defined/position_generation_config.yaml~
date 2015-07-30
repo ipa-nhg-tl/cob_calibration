@@ -1,0 +1,17 @@
+arms:
+  arm_left:
+    group: arm_left_group
+    limits_corner_1: [0.15074, 0.40, 0.52078-0.698747/2]  # x1, y1, z1
+    limits_corner_2: [0.6808, -0.40, 1.135-0.698747/2]    # x2, y2, z2
+    discritization: [4,4,4]
+    hand_orientation: [-0.55194, -0.83389, 0, 0]
+    arm_planning_reference_frame: torso_cam3d_left_link
+		
+
+  arm_right:
+    group: arm_left_group
+    limits_corner_1: [0.15074, 0.40, 0.52078-0.698747/2]		# x1, y1, z1
+    limits_corner_2: [0.6808, -0.40, 1.135-0.698747/2]			# x2, y2, z2
+    discritization: [4,4,4]
+    hand_orientation: [0.83389, 0.55194, 0, 0]
+    arm_planning_reference_frame: torso_cam3d_right_link

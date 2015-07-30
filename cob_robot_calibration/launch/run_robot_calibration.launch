@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <launch>
 
-    <node pkg="cob_robot_calibration_est" type="multi_step_cov_estimator.py" name="cal_cov_estimator_v0" output="screen" launch-prefix="time" args="/tmp/cal/cal_measurements.bag /tmp/cal" respawn="False"/>
+    <node pkg="cob_robot_calibration_est" type="multi_step_cov_estimator.py" name="cal_cov_estimator_v0" output="screen" launch-prefix="time"
+     args="/home/fmw-sa/IDEcatkin_ws/Data_sets/bag_file_and_images_1/cal_measurements.bag /home/fmw-sa/IDEcatkin_ws/Data_sets/bag_file_and_images_1" respawn="False"/>
 
     <group ns="calibration_config" clear_params="true">
       <!-- sensors -->
@@ -21,8 +22,8 @@
           <param name="use_cov" type="bool" value="True" />
           <rosparam>
             sensors:
-            - arm_chain
-            - left
+            - arm_right
+            - torso_cam3d_right_link
           </rosparam>
           <param name="output_filename" type="string" value="result_step_1" />
         </group>
@@ -31,8 +32,8 @@
           <param name="use_cov" type="bool" value="True" />
           <rosparam>
             sensors:
-            - arm_chain
-            - left
+            - arm_right
+            - torso_cam3d_right_link
           </rosparam>
           <param name="output_filename" type="string" value="result_step_2" />
         </group>
@@ -41,8 +42,8 @@
           <param name="use_cov" type="bool" value="True" />
           <rosparam>
             sensors:
-            - arm_chain
-            - left
+            - arm_right
+            - torso_cam3d_right_link
           </rosparam>
           <param name="output_filename" type="string" value="result_step_3" />
         </group>

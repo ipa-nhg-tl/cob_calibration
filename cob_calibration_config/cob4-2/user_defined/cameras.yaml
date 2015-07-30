@@ -1,0 +1,42 @@
+reference:
+        name: torso_cam3d_left_link
+        topic: /torso_cam3d_left/rgb/image_raw
+        cam_info_topic: /torso_cam3d_left/set_camera_info    # This is needed for sending the results to the camera driver
+        file_prefix: left_kinect
+        calibration_data_file: left.yaml #this might not be right
+        frame_id: /torso_cam3d_left_link
+        property: cam_ref_      # in calibration_data
+
+further:
+       -        name: torso_cam3d_right_link
+                topic: /torso_cam3d_right/rgb/image_raw
+                cam_info_topic: /torso_cam3d_right/set_camera_info
+                file_prefix: right_kinect
+                calibration_data_file: right.yaml #this might not be right
+                frame_id: /torso_cam3d_right_link
+                property: cam_r_
+                is_part_of_stereo_system: False
+       -        name: torso_cam3d_down_link
+                topic: /torso_cam3d_down/rgb/image_raw
+                cam_info_topic: /torso_cam3d_down/set_camera_info
+                file_prefix: down_kinect
+                calibration_data_file: kinect_rgb.yaml #this might not be right
+                frame_id: /torso_cam3d_down_link
+                property: cam_d_
+#                 
+#                 
+#                 
+#        -        name: gripper_left_camera_link
+#                 topic: /torso_cam3d_down/rgb/image_raw
+#                 file_prefix: gripper_left_camera
+#                 calibration_data_file: kinect_rgb.yaml #this might not be right
+#                 frame_id: /gripper_left_camera_link
+#                 property: cam_d_
+#                 
+#                 
+#        -        name: gripper_right_camera_link
+#                 topic: /torso_cam3d_down/rgb/image_raw
+#                 file_prefix: gripper_right_camera
+#                 calibration_data_file: kinect_rgb.yaml #this might not be right
+#                 frame_id: /gripper_right_camera_link
+#                 property: cam_d_

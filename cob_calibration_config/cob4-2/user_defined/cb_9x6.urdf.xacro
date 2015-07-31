@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- This is the 6x9 checkerboard model for COB4. Tested and working with cob4-2. -->
+<!-- To attach the checkerboard, add the following line to the robot's xacro file: <xacro:include filename="/PATH_TO_THIS_FILE/cb_9x6.urdf.xacro" /> -->
+
+  <!-- calibration -->
+  <xacro:include filename="$(find cob_hardware_config)/cob4-2/urdf/properties.urdf.xacro" />
+
+  <joint name="cb_6x9_base_joint_left" type="fixed" >
+    <origin xyz="${gripper_left_x} ${gripper_left_y} ${gripper_left_z}" rpy="${gripper_left_roll} ${gripper_left_pitch} ${gripper_left_yaw}" />
+    <parent link="gripper_left_grasp_link" />
+    <child link="cb_6x9_base_link_left" />
+  </joint>
+
+  <link name="cb_6x9_base_link_left">
+  <xacro:default_inertial/>
+  <visual>
+   <origin xyz="-0.07 0.01 -0.1748" rpy="1.57075 -1.57075 0" />
+   <geometry>
+     <mesh filename="package://cob_gazebo_objects/Media/models/cb_9x6.dae" scale="0.0254 0.0254 0.0254"/>
+   </geometry>
+  </visual>
+  <collision>
+   <origin xyz="-0.17 0.0125 -0.0748" rpy="1.57075 -1.57075 0" />  <!-- Added x=-0.1, y=+0.0025, z=+0.1 to align the collision with the model-->
+   <geometry>
+     <box size="0.2 0.2 0.005" />
+     <!--mesh filename="package://cob_gazebo_objects/Media/models/cb_9x6.dae"/-->>
+   </geometry>
+  </collision>     
+  </link>  
+
+  <joint name="cb_6x9_base_joint_right" type="fixed" >
+    <origin xyz="${gripper_right_x} ${gripper_right_y} ${gripper_right_z}" rpy="${gripper_right_roll} ${gripper_right_pitch} ${gripper_right_yaw}" />
+    <parent link="gripper_right_grasp_link" />
+    <child link="cb_6x9_base_link_right" />
+  </joint>
+
+  <link name="cb_6x9_base_link_right">
+  <xacro:default_inertial/>
+  <visual>
+   <origin xyz="-0.07 0.01 -0.1748" rpy="1.57075 -1.57075 0" />
+   <geometry>
+     <mesh filename="package://cob_gazebo_objects/Media/models/cb_9x6.dae" scale="0.0254 0.0254 0.0254"/>
+   </geometry>
+  </visual>
+  <collision>
+   <origin xyz="-0.17 0.0125 -0.0748" rpy="1.57075 -1.57075 0" />	<!-- Added x=-0.1, y=+0.0025, z=+0.1 to align the collision with the model -->
+   <geometry>
+     <box size="0.2 0.2 0.005" />
+     <!--mesh filename="package://cob_gazebo_objects/Media/models/cb_9x6.dae"/-->>
+   </geometry>
+  </collision>     
+  </link>  
+
+
+
+
+
+</robot>

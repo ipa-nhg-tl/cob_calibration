@@ -185,9 +185,9 @@ def main():
     cam_info_topics = {}
     cam_list = rospy.get_param(("/cob_camera_calibration/cameras"))
     print cam_list["reference"]["name"]
-    cam_info_topics[cam_list["reference"]["name"]] = cam_list['reference']['cam_info_topic']
+    cam_info_topics[cam_list["reference"]["name"]] = cam_list['reference']['cam_info_service']
     for camera in cam_list["further"]:
-        cam_info_topics[camera["name"]] = camera["cam_info_topic"]
+        cam_info_topics[camera["name"]] = camera["cam_info_service"]
     
 
     if len(ptrn_size) != len(sqr_size):
